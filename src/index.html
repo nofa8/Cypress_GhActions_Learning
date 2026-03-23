@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <style>.hidden { display: none; } #welcome { color: green; }</style>
+</head>
+<body>
+ <form id="loginForm">
+ <input data-test-id="login-email" type="email" placeholder="Email">
+ <input data-test-id="login-password" type="password" placeholder="Password">
+ <button data-test-id="login-submit" type="button" onclick="handleLogin()">Login</button>
+ </form>
+ <h1 id="welcome" data-test-id="welcome-message" class="hidden">Welcome back!</h1>
+ <div id="errors" data-test-id="errors-message" class="hidden">Invalid credentials</div>
+ <script>
+ function handleLogin() {
+    function showWelcomeMessage() {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('welcome').classList.remove('hidden');
+    }
+
+    function errors() {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('welcome').classList.add('hidden');
+        document.getElementById('errors').classList.remove('hidden');
+    }
+    if (document.querySelector('[data-test-id="login-email"]').value === "example@example.com" && document.querySelector('[data-test-id="login-password"]').value === "safePassword123") {
+         showWelcomeMessage();
+     } else {
+         document.getElementById('errors').classList.remove('hidden');
+     }
+ }
+ </script>
+</body>
+</html>

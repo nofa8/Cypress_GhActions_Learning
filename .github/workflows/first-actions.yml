@@ -1,0 +1,45 @@
+name: E2E Cypress
+
+# Trigger workflow on push or pull request events
+on:
+  push:
+  pull_request:
+
+jobs:
+  cypress-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      # Pull repository code into the runner
+      - uses: actions/checkout@v4
+      # Use Node 20 and cache npm dependencies
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Install dependencies from package-lock.json
+      - run: npm ci
+
+      # Start app, wait until reachable, run tests
+      - uses: cypress-io/github-action@v6
+        with:
+          start: npm run serve
+          wait-on: http://127.0.0.1:5500
+          wait-on-timeout: 120
+          command: npm run cy:run
+
+      # Upload screenshots only when the job fails
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
+      # Upload videos only when the job fails
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          if-no-files-found: ignore
